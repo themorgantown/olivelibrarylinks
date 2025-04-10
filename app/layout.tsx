@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -9,19 +8,6 @@ const playfairDisplay = Playfair_Display({
   variable: '--font-playfair-display',
   display: 'swap', // Use display swap for better performance
   preload: true,
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: 'swap',
-  preload: true,
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: 'swap',
 });
 
 // Enhanced metadata for SEO and social sharing
@@ -59,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfairDisplay.variable} ${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${playfairDisplay.variable}`}>
       <body className="antialiased">
         {children}
       </body>

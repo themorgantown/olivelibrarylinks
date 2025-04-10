@@ -5,8 +5,6 @@
   --foreground: #1a1a1a;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
   --social-link-color: #b0b0b080;
   --heading-color: #3a4b20;
 }
