@@ -1,6 +1,5 @@
 import { Link } from '@/lib/google-sheets';
 import LinkContainer from './components/LinkContainer';
-import Image from "next/image";
 
 // Using server components to fetch data
 async function getLinks(): Promise<Link[]> {
@@ -25,7 +24,7 @@ export default async function Home() {
   const links = await getLinks();
   
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-16 bg-[#222222]">
+    <div className="min-h-screen flex flex-col items-center px-4 py-16">
       <header className="w-full max-w-md mb-12 text-center">
         <h1 className="text-3xl font-bold text-[#3a4b20] mb-2">Olive Free Library Links</h1>
         <div className="h-1 w-24 bg-[#3a4b2066] mx-auto"></div>
