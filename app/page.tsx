@@ -1,13 +1,17 @@
 import { Link } from '@/lib/google-sheets';
 import LinkContainer from './components/LinkContainer';
 
+// This enables ISR (Incremental Static Regeneration)
+export const revalidate = 600; // Revalidate at most every 10 minutes
+
 // Using server components to fetch data
 async function getLinks(): Promise<Link[]> {
   try {
-    // In a real app, you might want to implement caching here
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/links`, {
-      cache: 'no-store', // Don't cache this request
-      next: { revalidate: 60 }, // Revalidate at most every 60 seconds
+    // Use Cloudflare worker URL in production, fallback to local API in dev
+    const apiUrl = process.env.NEXT_PUBLIC_WORKER_URL || `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/links`;
+    
+    const response = await fetch(apiUrl, {
+      next: { revalidate: 600 }, // Cache for 10 minutes
     });
     
     if (!response.ok) throw new Error('Failed to fetch links');
@@ -26,21 +30,21 @@ export default async function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-16">
       <header className="w-full max-w-md mb-12 text-center">
-        <h1 className="text-3xl font-bold text-[#3a4b20] mb-2">Olive Free Library Links</h1>
-        <div className="h-1 w-24 bg-[#3a4b2066] mx-auto"></div>
+        <h1 className="text-3xl font-bold heading mb-2">Olive Free Library Links</h1>
+        <div className="h-1 w-24 mx-auto heading opacity-40"></div>
       </header>
       
       <main className="w-full flex-1">
         <LinkContainer links={links} />
       </main>
       
-      <footer className="mt-12 text-center text-sm text-[#b0b0b080]">
+      <footer className="mt-12 text-center text-sm">
         <p>
           <a 
             href="https://www.olivefreelibrary.org" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-[#b0b0b080] hover:text-[#3a4b20] transition-colors"
+            className="social-link"
           >
             Olive Free Library
           </a>
@@ -50,7 +54,7 @@ export default async function Home() {
             href="https://www.instagram.com/olivefreelibrary/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-[#b0b0b080] hover:text-[#3a4b20] transition-colors"
+            className="social-link"
             aria-label="Visit our Instagram"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -61,7 +65,7 @@ export default async function Home() {
             href="https://www.facebook.com/OliveFreeLibrary/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-[#b0b0b080] hover:text-[#3a4b20] transition-colors"
+            className="social-link"
             aria-label="Visit our Facebook"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
