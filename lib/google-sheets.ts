@@ -48,7 +48,7 @@ export async function getLinksFromSheet(): Promise<Link[]> {
       title: row[0] || '', // First column: title
       description: row[1] || undefined, // Second column: description (optional)
       url: row[2] || '', // Third column: URL
-    })).filter(link => link.title && link.url); // Filter out any incomplete entries
+    })).filter(link => link.title); // Include all entries that have at least a title
   } catch (error) {
     console.error('Error fetching data from Google Sheets:', error);
     throw new Error('Failed to fetch links from Google Sheets');

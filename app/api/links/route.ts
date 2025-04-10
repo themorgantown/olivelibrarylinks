@@ -5,6 +5,12 @@ import { getLinksFromSheet } from '@/lib/google-sheets';
 export async function GET() {
   try {
     const links = await getLinksFromSheet();
+    
+    // Log data in development mode (server-side)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Server-side - Google Sheets data fetched:', JSON.stringify(links, null, 2));
+    }
+    
     return NextResponse.json({ links });
   } catch (error) {
     console.error('Error in links API route:', error);
