@@ -1,19 +1,14 @@
-import { Link } from '@/lib/google-sheets';
+import { Link, getLinksFromSheet } from '@/lib/google-sheets';
 import LinkContainer from './components/LinkContainer';
 
-// Using server components to fetch data
+// Using static site generation - this tells Next.js to pre-render this page at build time
+export const dynamic = 'force-static';
+
+// Direct data fetching at build time
 async function getLinks(): Promise<Link[]> {
   try {
-    // In a real app, you might want to implement caching here
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/links`, {
-      cache: 'no-store', // Don't cache this request
-      next: { revalidate: 60 }, // Revalidate at most every 60 seconds
-    });
-    
-    if (!response.ok) throw new Error('Failed to fetch links');
-    
-    const data = await response.json();
-    return data.links || [];
+    // Fetch data directly from Google Sheets at build time
+    return await getLinksFromSheet();
   } catch (error) {
     console.error('Error fetching links:', error);
     return [];
@@ -25,12 +20,12 @@ export default async function Home() {
   
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-16">
-      <header className="w-full max-w-md mb-12 text-center">
-        <h1 className="text-3xl font-bold text-[#3a4b20] mb-2">Olive Free Library Links</h1>
+      <header className="w-full max-w-3xl mb-12 text-center">
+        <h1 className="text-3xl font-bold text-[#3a4b20] mb-2 playfair-display-header">Olive Free Library Links</h1>
         <div className="h-1 w-24 bg-[#3a4b2066] mx-auto"></div>
       </header>
       
-      <main className="w-full flex-1">
+      <main className="w-full max-w-6xl flex-1">
         <LinkContainer links={links} />
       </main>
       

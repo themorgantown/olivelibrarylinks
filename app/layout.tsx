@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfairDisplay.variable}`}>
+    <html lang="en" className={playfairDisplay.variable}>
       <body className="antialiased">
         {children}
       </body>

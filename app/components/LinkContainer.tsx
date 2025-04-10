@@ -16,15 +16,17 @@ export default function LinkContainer({ links }: LinkContainerProps) {
     }
   }, [links]);
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-6xl mx-auto">
       {links.length === 0 ? (
-        <div className="text-center p-6 bg-[#d9d9d9] shadow">
+        <div className="text-center p-6 bg-[#d9d9d9] shadow rounded-md">
           <p className="text-[#5B5B66]">No links available</p>
         </div>
       ) : (
-        links.map((link, index) => (
-          <LinkCard key={index} link={link} />
-        ))
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {links.map((link, index) => (
+            <LinkCard key={index} link={link} />
+          ))}
+        </div>
       )}
     </div>
   );
