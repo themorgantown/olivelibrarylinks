@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    // Enable Vercel Data Cache
+    useDataCache: true,
+  },
 };
 
 export default nextConfig;

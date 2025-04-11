@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import { JWT } from 'google-auth-library';
+import { unstable_cache } from 'next/cache';
 
 // This function creates an authenticated client for Google Sheets
 export async function getGoogleSheetsClient() {
@@ -27,8 +28,8 @@ export interface Link {
   url: string;
 }
 
-// Fetch links from Google Sheets
-export async function getLinksFromSheet(): Promise<Link[]> {
+// Function to actually fetch links from Google Sheets
+async function fetchLinksFromSheet(): Promise<Link[]> {
   try {
     const sheets = await getGoogleSheetsClient();
     
@@ -54,3 +55,17 @@ export async function getLinksFromSheet(): Promise<Link[]> {
     throw new Error('Failed to fetch links from Google Sheets');
   }
 }
+
+// Cached version of getLinksFromSheet that uses Vercel Data Cache
+export const getLinksFromSheet = unstable_cache(
+  async () => {
+    return await fetchLinksFromSheet();
+  },
+  // Cache key
+  ['google-sheets-links'],
+  // Options - refresh every 5 minutes (300 seconds)
+  { 
+    revalidate: 300,
+    tags: ['google-sheets-links']
+  }
+);
