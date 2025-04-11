@@ -1,6 +1,8 @@
 import { Link, getLinksFromSheet } from '@/lib/google-sheets';
 import LinkContainer from './components/LinkContainer';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
+
 // We can use static rendering for the page itself
 export const dynamic = 'auto';
 export const revalidate = 300; // Revalidate this page every 5 minutes (optional safety)
@@ -16,19 +18,16 @@ async function getLinks(): Promise<Link[]> {
   }
 }
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: { refresh?: string };
-}) {
-  // Handle searchParams properly as async
-  const params = await Promise.resolve(searchParams);
-  
-  // If refresh parameter is present, redirect to the refresh API endpoint
-  if (params.refresh !== undefined) {
+export default async function Home() {
+  // Await headers to ensure it's properly resolved
+  const headersList = await headers();
+  const searchParams = new URLSearchParams(headersList.get('x-forwarded-query') || '');
+  const refreshParam = searchParams.get('refresh');
+
+  if (refreshParam !== null) {
     redirect('/api/refresh');
   }
-  
+
   // Get links from cache or fetch if cache is expired
   const links = await getLinks();
   
