@@ -67,7 +67,7 @@ export default async function Home({
             </svg>
           </a>
           <a 
-            href="https://www.facebook.com/OliveFreeLibrary/" 
+            href="https://www.facebook.com/olivelibrary" 
             target="_blank" 
             rel="noopener noreferrer"
             className="  hover:text-[#3a4b20] transition-colors"

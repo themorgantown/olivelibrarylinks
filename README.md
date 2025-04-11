@@ -2,16 +2,21 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+create .env.local with these variables: 
+
+```
+GOOGLE_CLIENT_EMAIL=something@projectname.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY=" "
+GOOGLE_SHEET_ID= 
+GOOGLE_SHEET_RANGE=Sheet1!A2:C
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm i && npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
