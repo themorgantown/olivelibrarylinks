@@ -1,12 +1,14 @@
 import { Link, getLinksFromSheet } from '@/lib/google-sheets';
 import LinkContainer from './components/LinkContainer';
-// Using static site generation - this tells Next.js to pre-render this page at build time
-export const dynamic = 'force-static';
+import { redirect } from 'next/navigation';
+// We can use static rendering for the page itself
+export const dynamic = 'auto';
+export const revalidate = 300; // Revalidate this page every 5 minutes (optional safety)
 
-// Direct data fetching at build time
+// Data fetching function
 async function getLinks(): Promise<Link[]> {
   try {
-    // Fetch data directly from Google Sheets at build time
+    // Fetch data from Google Sheets (will use cache according to the cache settings)
     return await getLinksFromSheet();
   } catch (error) {
     console.error('Error fetching links:', error);
@@ -14,7 +16,17 @@ async function getLinks(): Promise<Link[]> {
   }
 }
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { refresh?: string };
+}) {
+  // If refresh parameter is present, redirect to the refresh API endpoint
+  if (searchParams.refresh !== undefined) {
+    redirect('/api/refresh');
+  }
+  
+  // Get links from cache or fetch if cache is expired
   const links = await getLinks();
   
   return (
