@@ -21,8 +21,11 @@ export default async function Home({
 }: {
   searchParams: { refresh?: string };
 }) {
+  // Handle searchParams properly as async
+  const params = await Promise.resolve(searchParams);
+  
   // If refresh parameter is present, redirect to the refresh API endpoint
-  if (searchParams.refresh !== undefined) {
+  if (params.refresh !== undefined) {
     redirect('/api/refresh');
   }
   
