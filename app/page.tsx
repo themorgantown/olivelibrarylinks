@@ -1,6 +1,5 @@
 import { Link, getLinksFromSheet } from '@/lib/google-sheets';
 import LinkContainer from './components/LinkContainer';
-
 // Using static site generation - this tells Next.js to pre-render this page at build time
 export const dynamic = 'force-static';
 
@@ -29,23 +28,24 @@ export default async function Home() {
         <LinkContainer links={links} />
       </main>
       
-      <footer className="mt-12 text-center text-sm text-[#b0b0b080]">
+      <footer className="mt-12 text-center text-sm">
         <p>
           <a 
             href="https://www.olivefreelibrary.org" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-[#b0b0b080] hover:text-[#3a4b20] transition-colors"
+            className="hover:text-[#3a4b20] transition-colors"
           >
             Olive Free Library
           </a>
+          <p></p>
         </p>
         <div className="flex justify-center space-x-4 mt-3">
           <a 
             href="https://www.instagram.com/olivefreelibrary/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-[#b0b0b080] hover:text-[#3a4b20] transition-colors"
+            className=" hover:text-[#3a4b20] transition-colors"
             aria-label="Visit our Instagram"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -56,7 +56,7 @@ export default async function Home() {
             href="https://www.facebook.com/OliveFreeLibrary/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-[#b0b0b080] hover:text-[#3a4b20] transition-colors"
+            className="  hover:text-[#3a4b20] transition-colors"
             aria-label="Visit our Facebook"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
