@@ -1,5 +1,25 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+# VISIT 
+
+https://olivelibrarylinks.vercel.app/
+
+# View Live: 
+
+https://olivelibrarylinks.vercel.app/?refresh
+
+# EDIT 
+
+https://docs.google.com/spreadsheets/d/1YVT8JOkYDYImEZ9X01r4Pp_J3jd3Vyzj_TNpMAkgdfw/edit?gid=0#gid=0
+
+
+
+# STATS & Monitoring 
+
+* Google sheets: https://console.cloud.google.com/apis/dashboard?invt=AbuegA&project=olive-free-library
+* Vercel: https://vercel.com/danielmorgans-projects/olivelibrarylinks
+* Data Cache: 
+
 ## Getting Started
 
 create .env.local with these variables: 
