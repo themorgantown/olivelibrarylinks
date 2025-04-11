@@ -11,7 +11,14 @@ export async function GET() {
       console.log('Server-side - Google Sheets data fetched:', JSON.stringify(links, null, 2));
     }
     
-    return NextResponse.json({ links });
+    // Set cache headers to cache for 5 minutes (300 seconds)
+    // s-maxage=300: Cache in the Vercel edge network for 5 minutes
+    // stale-while-revalidate: Allow serving stale content while revalidating in the background
+    return NextResponse.json({ links }, {
+      headers: {
+        'Cache-Control': 's-maxage=300, stale-while-revalidate'
+      }
+    });
   } catch (error) {
     console.error('Error in links API route:', error);
     return NextResponse.json(
