@@ -38,7 +38,6 @@ export default async function Home() {
           >
             Olive Free Library
           </a>
-          <p></p>
         </p>
         <div className="flex justify-center space-x-4 mt-3">
           <a 
