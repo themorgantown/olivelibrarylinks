@@ -1,9 +1,14 @@
-name: Link Checker
+name: Link Checker
 
 on:
   schedule:
-    - cron: "0 */12 * * *" # Run every 12 hours
-  workflow_dispatch: # Allow manual triggering
+    - cron: '0 */12 * * *'          # every 12 h
+  workflow_dispatch:
+
+# ───────────────────── concurrency guard ─────────────────────
+concurrency:
+  group: link‑checker‑${{ github.ref }}
+  cancel-in-progress: true          # newer run wins, avoids artifact races
 
 jobs:
   check-links:
@@ -11,67 +16,76 @@ jobs:
     permissions:
       contents: read
       issues: write
+
     defaults:
       run:
-        working-directory: ./pupeteer
+        working-directory: ./puppeteer   # typo fixed
+        shell: bash -euo pipefail        # fail fast
+
     steps:
-      - name: Checkout repository
+      # Optional: see exactly what repo the runner thinks it’s in
+      - name: Debug repo slug
+        run: echo "::notice title=Debug Repo::${{ github.repository }}"
+
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          # Ensure proper repository reference
-          repository: ${{ github.repository }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Personal‑access token (secret PAT_REPO) avoids 404 on private/forked repos
+          token: ${{ secrets.PAT_REPO }}
+          fetch-depth: 1
 
-      - name: Set up Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "18" # Specify Node.js version
+          node-version: '18'
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install deps
+        run: npm ci --no-audit --prefer-offline
 
-      - name: Run link checker script
+      - name: Run link‑checker
         id: link_check
         run: |
           node count-links.js > link-checker-output.log 2>&1
-          echo "SCRIPT_EXIT_CODE=$?" >> $GITHUB_OUTPUT
-          cat link-checker-output.log
-          # Ensure LINK_COUNT is set even if grep fails, default to 0
-          LINK_COUNT=$(grep 'FINAL_LINK_COUNT:' link-checker-output.log | awk '{print $2}' || echo "0")
-          echo "LINK_COUNT=$LINK_COUNT" >> $GITHUB_OUTPUT
-          echo "Link count determined: $LINK_COUNT"
+          echo "SCRIPT_EXIT_CODE=$?" >> "$GITHUB_OUTPUT"
+
+          LINK_COUNT=$(grep -oE 'FINAL_LINK_COUNT:[[:space:]]*[0-9]+' link-checker-output.log \
+                       | awk '{print $2}')
+          echo "LINK_COUNT=${LINK_COUNT:-0}" >> "$GITHUB_OUTPUT"
+          echo "::notice title=Link‑count::${LINK_COUNT:-0}"
 
       - name: Upload screenshot for issue
-        if: steps.link_check.outputs.LINK_COUNT < 1 || steps.link_check.outputs.SCRIPT_EXIT_CODE != 0
+        if: >
+          steps.link_check.outputs.LINK_COUNT == '0' ||
+          steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
         uses: actions/upload-artifact@v4
         with:
-          name: link-checker-screenshot-for-issue # Unique name for this artifact
-          path: pupeteer/latest-screenshot.png
-          retention-days: 1 # Keep it short as it's for the issue
+          name: failed‑link‑checker‑screenshot
+          path: puppeteer/latest-screenshot.png
+          retention-days: 1
 
-      - name: Create GitHub Issue if link count is less than 1 or script failed
-        if: steps.link_check.outputs.LINK_COUNT < 1 || steps.link_check.outputs.SCRIPT_EXIT_CODE != 0
+      - name: Create alert issue
+        if: >
+          steps.link_check.outputs.LINK_COUNT == '0' ||
+          steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
         uses: actions-ecosystem/action-create-issue@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          title: "ALERT: Olive Library Links - Link Count Low or Script Failed"
+          title: "⚠️ Olive Library Links: Link count low or script failed"
+          labels: bug, automated-alert
           body: |
-            The link checker script reported an issue.
-            - **Link Count:** ${{ steps.link_check.outputs.LINK_COUNT }} (Threshold is < 1)
-            - **Script Exit Code:** ${{ steps.link_check.outputs.SCRIPT_EXIT_CODE }}
-            - **Timestamp:** ${{ format(github.event.repository.updated_at, 'YYYY-MM-DD HH:mm:ss') }}
-            Please check the website and the Google Sheet.
-            A screenshot of the page has been uploaded as an artifact with this run. Look for "link-checker-screenshot-for-issue".
-            See the action run logs for more details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          labels: bug, automated alert
+            **Link count:** ${{ steps.link_check.outputs.LINK_COUNT }}
+            **Exit code:** ${{ steps.link_check.outputs.SCRIPT_EXIT_CODE }}
+            **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-      - name: Upload link checker logs and full run screenshot
-        if: always() # Always upload artifacts
+            Logs and screenshot are attached as workflow artifacts.
+
+      - name: Upload logs & screenshot (always)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: link-checker-artifacts # Keep this for general logs
+          name: link‑checker‑artifacts
           path: |
-            pupeteer/link-checker-output.log
-            pupeteer/latest-screenshot.png
-            pupeteer/link-count-log.txt
+            puppeteer/link-checker-output.log
+            puppeteer/latest-screenshot.png
           retention-days: 7
