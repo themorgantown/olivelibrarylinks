@@ -8,14 +8,19 @@ on:
 jobs:
   check-links:
     runs-on: ubuntu-latest
-    permissions: # Added permissions block
-      issues: write # Grant permission to write issues
+    permissions:
+      contents: read
+      issues: write
     defaults:
       run:
         working-directory: ./pupeteer
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Ensure proper repository reference
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -29,32 +34,32 @@ jobs:
         id: link_check
         run: |
           node count-links.js > link-checker-output.log 2>&1
-          echo "SCRIPT_EXIT_CODE=$?" >> $GITHUB_ENV
+          echo "SCRIPT_EXIT_CODE=$?" >> $GITHUB_OUTPUT
           cat link-checker-output.log
           # Ensure LINK_COUNT is set even if grep fails, default to 0
-          LINK_COUNT=$(grep \'FINAL_LINK_COUNT:\' link-checker-output.log | awk \'{print $2}\' || echo "0")
-          echo "LINK_COUNT=$LINK_COUNT" >> $GITHUB_ENV
+          LINK_COUNT=$(grep 'FINAL_LINK_COUNT:' link-checker-output.log | awk '{print $2}' || echo "0")
+          echo "LINK_COUNT=$LINK_COUNT" >> $GITHUB_OUTPUT
           echo "Link count determined: $LINK_COUNT"
 
       - name: Upload screenshot for issue
-        if: env.LINK_COUNT < 1 || env.SCRIPT_EXIT_CODE != 0
+        if: steps.link_check.outputs.LINK_COUNT < 1 || steps.link_check.outputs.SCRIPT_EXIT_CODE != 0
         uses: actions/upload-artifact@v4
         with:
           name: link-checker-screenshot-for-issue # Unique name for this artifact
           path: pupeteer/latest-screenshot.png
-          retention-days: 1 # Keep it short as it\'s for the issue
+          retention-days: 1 # Keep it short as it's for the issue
 
       - name: Create GitHub Issue if link count is less than 1 or script failed
-        if: env.LINK_COUNT < 1 || env.SCRIPT_EXIT_CODE != 0
+        if: steps.link_check.outputs.LINK_COUNT < 1 || steps.link_check.outputs.SCRIPT_EXIT_CODE != 0
         uses: actions-ecosystem/action-create-issue@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           title: "ALERT: Olive Library Links - Link Count Low or Script Failed"
           body: |
             The link checker script reported an issue.
-            - **Link Count:** ${{ env.LINK_COUNT }} (Threshold is < 1)
-            - **Script Exit Code:** ${{ env.SCRIPT_EXIT_CODE }}
-            - **Timestamp:** $(date)
+            - **Link Count:** ${{ steps.link_check.outputs.LINK_COUNT }} (Threshold is < 1)
+            - **Script Exit Code:** ${{ steps.link_check.outputs.SCRIPT_EXIT_CODE }}
+            - **Timestamp:** ${{ format(github.event.repository.updated_at, 'YYYY-MM-DD HH:mm:ss') }}
             Please check the website and the Google Sheet.
             A screenshot of the page has been uploaded as an artifact with this run. Look for "link-checker-screenshot-for-issue".
             See the action run logs for more details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
