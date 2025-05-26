@@ -8,6 +8,8 @@ on:
 jobs:
   check-links:
     runs-on: ubuntu-latest
+    permissions: # Added permissions block
+      issues: write # Grant permission to write issues
     defaults:
       run:
         working-directory: ./pupeteer
