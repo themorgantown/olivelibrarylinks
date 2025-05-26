@@ -39,7 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-pupeteer/link-checker-runs.log
-puppeteer/latest-screenshot.png
 puppeteer/link-checker-runs.log
+puppeteer/latest-screenshot.png
 puppeteer/link-count-log.txt
+puppeteer/latest-screenshot.png
+puppeteer/precommit-link-check.log
+puppeteer/link-count-log.txt
+puppeteer/latest-screenshot.png
