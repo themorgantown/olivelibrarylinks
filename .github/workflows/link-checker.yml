@@ -20,7 +20,6 @@ jobs:
       run:
         # valid template string → runner injects script at {0}
         shell: bash --noprofile --norc -euo pipefail {0}
-        working-directory: ./puppeteer
 
     steps:
       - name: Debug repo slug
@@ -39,10 +38,12 @@ jobs:
           cache: 'npm'
 
       - name: Install deps
+        working-directory: ./puppeteer
         run: npm ci --no-audit --prefer-offline
 
       - name: Run link‑checker
         id: link_check
+        working-directory: ./puppeteer
         run: |
           node count-links.js > link-checker-output.log 2>&1
           echo "SCRIPT_EXIT_CODE=$?" >> "$GITHUB_OUTPUT"
