@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 pupeteer/link-checker-runs.log
+puppeteer/latest-screenshot.png
+puppeteer/link-checker-runs.log
+puppeteer/link-count-log.txt

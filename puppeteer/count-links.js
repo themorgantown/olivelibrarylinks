@@ -48,8 +48,7 @@ async function countLinks() {
     const contentLinks = links.filter(link => 
       !link.href.includes('instagram.com') && 
       !link.href.includes('facebook.com') && 
-      !link.href.includes('olivefreelibrary.org') &&
-      !link.href.endsWith('#')
+      !link.href.includes('olivefreelibrary.org')
     );
     
     const contentLinkCount = contentLinks.length;
