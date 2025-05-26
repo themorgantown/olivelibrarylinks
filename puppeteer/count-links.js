@@ -2,6 +2,13 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 const { exec } = require('child_process');
 
+const argv = process.argv.slice(2);
+let targetUrl = 'https://olivelibrarylinks.vercel.app/';
+const urlArgIndex = argv.indexOf('--url');
+if (urlArgIndex !== -1 && argv[urlArgIndex + 1]) {
+  targetUrl = argv[urlArgIndex + 1];
+}
+
 async function countLinks() {
   console.log('Starting browser...');
   
@@ -24,7 +31,7 @@ async function countLinks() {
     
     console.log('Navigating to Olive Library Links website...');
     // Navigate to the Olive Library Links website
-    await page.goto('https://olivelibrarylinks.vercel.app/', {
+    await page.goto(targetUrl, {
       waitUntil: 'networkidle2',
       timeout: 60000
     });

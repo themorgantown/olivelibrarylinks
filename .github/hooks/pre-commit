@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Start the dev server in the background
+npm run dev &
+DEV_PID=$!
+
+# Wait for the server to be ready (try for up to 30 seconds)
+ATTEMPTS=0
+MAX_ATTEMPTS=30
+until curl -s http://localhost:3000 > /dev/null; do
+  sleep 1
+  ATTEMPTS=$((ATTEMPTS+1))
+  if [ $ATTEMPTS -ge $MAX_ATTEMPTS ]; then
+    echo "[pre-commit] ERROR: Localhost:3000 did not start in time."
+    kill $DEV_PID
+    exit 1
+  fi
+done
+
+echo "[pre-commit] Localhost:3000 is up. Running Puppeteer link count..."
+
+# Run the Puppeteer link checker (assumes it checks localhost:3000)
+node puppeteer/count-links.js --url http://localhost:3000 > puppeteer/precommit-link-check.log 2>&1
+LINK_COUNT=$(grep 'FINAL_LINK_COUNT:' puppeteer/precommit-link-check.log | awk '{print $2}')
+
+# Kill the dev server
+kill $DEV_PID
+
+if [ -z "$LINK_COUNT" ]; then
+  echo "[pre-commit] ERROR: Could not determine link count. See puppeteer/precommit-link-check.log."
+  exit 1
+fi
+
+if [ "$LINK_COUNT" -le 1 ]; then
+  echo "[pre-commit] ERROR: Only $LINK_COUNT links found on localhost:3000. Commit aborted."
+  exit 1
+fi
+
+echo "[pre-commit] $LINK_COUNT links found. Proceeding with commit."
+
+exit 0
