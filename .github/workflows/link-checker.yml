@@ -28,7 +28,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4.2.2
         with:
-          token: ${{ secrets.PAT_REPO }}   # PAT with repo scope
           fetch-depth: 1
 
       - name: Set up Node
