@@ -1,14 +1,13 @@
-name: Link Checker
+name: Link Checker
 
 on:
   schedule:
     - cron: '0 */12 * * *'          # every 12 h
   workflow_dispatch:
 
-# ───────────────────── concurrency guard ─────────────────────
 concurrency:
   group: link‑checker‑${{ github.ref }}
-  cancel-in-progress: true          # newer run wins, avoids artifact races
+  cancel-in-progress: true
 
 jobs:
   check-links:
@@ -19,23 +18,22 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./puppeteer   # typo fixed
-        shell: bash -euo pipefail        # fail fast
+        # valid template string → runner injects script at {0}
+        shell: bash --noprofile --norc -euo pipefail {0}
+        working-directory: ./puppeteer
 
     steps:
-      # Optional: see exactly what repo the runner thinks it’s in
       - name: Debug repo slug
         run: echo "::notice title=Debug Repo::${{ github.repository }}"
 
       - name: Checkout repo
         uses: actions/checkout@v4.2.2
         with:
-          # Personal‑access token (secret PAT_REPO) avoids 404 on private/forked repos
-          token: ${{ secrets.PAT_REPO }}
+          token: ${{ secrets.PAT_REPO }}   # PAT with repo scope
           fetch-depth: 1
 
       - name: Set up Node
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
@@ -48,26 +46,21 @@ jobs:
         run: |
           node count-links.js > link-checker-output.log 2>&1
           echo "SCRIPT_EXIT_CODE=$?" >> "$GITHUB_OUTPUT"
-
           LINK_COUNT=$(grep -oE 'FINAL_LINK_COUNT:[[:space:]]*[0-9]+' link-checker-output.log \
                        | awk '{print $2}')
           echo "LINK_COUNT=${LINK_COUNT:-0}" >> "$GITHUB_OUTPUT"
           echo "::notice title=Link‑count::${LINK_COUNT:-0}"
 
       - name: Upload screenshot for issue
-        if: >
-          steps.link_check.outputs.LINK_COUNT == '0' ||
-          steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
-        uses: actions/upload-artifact@v4.6.2
+        if: steps.link_check.outputs.LINK_COUNT == '0' || steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
+        uses: actions/upload-artifact@v4
         with:
           name: failed‑link‑checker‑screenshot
           path: puppeteer/latest-screenshot.png
           retention-days: 1
 
       - name: Create alert issue
-        if: >
-          steps.link_check.outputs.LINK_COUNT == '0' ||
-          steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
+        if: steps.link_check.outputs.LINK_COUNT == '0' || steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
         uses: actions-ecosystem/action-create-issue@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
