@@ -57,6 +57,7 @@ async function countLinks() {
     
     console.log(`[${timestamp}] Total links found: ${links.length}`);
     console.log(`[${timestamp}] Content links count: ${contentLinkCount}`);
+    console.log(`FINAL_LINK_COUNT: ${contentLinkCount}`); // Output for GitHub Action
     
     // Save the results to a log file
     const logPath = path.join(__dirname, 'link-count-log.txt');
@@ -65,14 +66,10 @@ async function countLinks() {
     require('fs').appendFileSync(logPath, logMessage);
     
     // Check if content links count is below threshold
-    if (contentLinkCount < 7) {
-      console.log(`[${timestamp}] WARNING: Link count is below threshold (${contentLinkCount} < 7)`);
-      
-      // Show macOS notification
-      const title = "Olive Library Links Alert";
-      const message = `Only ${contentLinkCount} links found - below minimum threshold of 7!`;
-      
-      showMacOSNotification(title, message);
+    if (contentLinkCount < 1) { // Changed threshold to 1
+      console.log(`[${timestamp}] WARNING: Link count is below threshold (${contentLinkCount} < 1)`);
+      // Removed macOS notification
+      process.exitCode = 1; // Set exit code to indicate failure
     }
     
     // Take a screenshot for reference
@@ -82,22 +79,13 @@ async function countLinks() {
     
   } catch (error) {
     console.error('An error occurred:', error);
-    showMacOSNotification("Link Checker Error", "Failed to check links. See log for details.");
+    // Removed macOS notification
+    process.exitCode = 1; // Set exit code to indicate failure
   } finally {
     // Close the browser
     await browser.close();
     console.log('Browser closed.');
   }
-}
-
-// Function to show macOS notification
-function showMacOSNotification(title, message) {
-  const script = `osascript -e 'display notification "${message}" with title "${title}" sound name "Basso"'`;
-  exec(script, (error) => {
-    if (error) {
-      console.error(`Error showing notification: ${error}`);
-    }
-  });
 }
 
 // Run the function

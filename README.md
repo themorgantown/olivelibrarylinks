@@ -30,7 +30,7 @@ The Olive Library Links application serves as a central hub for important resour
 
 ## Monitoring & Administration
 
-- **Google Cloud Console**: [https://console.cloud.google.com/apis/dashboard?invt=AbuegA&project=olive-free-library](https://console.cloud.google.com/apis/dashboard?invt=AbuegA&project=olive-free-library)
+- **Google Cloud Console**: [https://console.cloud.google.com/apis/api/sheets.googleapis.com/metrics?inv=1&invt=Abyb2A&project=olive-free-library](https://console.cloud.google.com/apis/api/sheets.googleapis.com/metrics?inv=1&invt=Abyb2A&project=olive-free-library)
 - **Vercel Dashboard**: [https://vercel.com/danielmorgans-projects/olivelibrarylinks](https://vercel.com/danielmorgans-projects/olivelibrarylinks)
 
 ## How to Build
