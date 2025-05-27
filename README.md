@@ -139,6 +139,29 @@ This section provides detailed instructions for developers who want to build and
    - Cache-Control headers for API responses
    - Next.js bundle optimizations in `next.config.ts`
 
+### Automated Link Checking and Pre-commit Hook
+
+#### Puppeteer Link Counter
+- The `puppeteer/count-links.js` script uses Puppeteer to launch a headless browser, visit the site, and count the number of content links (excluding navigation and social links).
+- It logs the total and content link counts to `puppeteer/link-count-log.txt` and takes a screenshot of the current page (`puppeteer/latest-screenshot.png`).
+- You can run the link counter manually:
+  ```bash
+  cd puppeteer
+  npm install  # only needed once
+  node count-links.js --url https://olivelibrarylinks.vercel.app/
+  ```
+  Or to check your local dev server:
+  ```bash
+  node count-links.js --url http://localhost:3000
+  ```
+
+#### Pre-commit Hook
+- A pre-commit hook script (`.github/hooks/pre-commit`) automatically runs before each commit.
+- It starts the local dev server, waits for it to be ready, then runs the Puppeteer link counter against `http://localhost:3000`.
+- If the number of content links is less than 2, the commit is blocked and an error is shown. The link count and any errors are logged to `puppeteer/precommit-link-check.log`.
+- This helps prevent accidental commits that would break or remove all content links from the site.
+- To bypass the hook (not recommended), use `git commit --no-verify`.
+
 ## Getting Started
 
 create .env.local with these variables: 
@@ -160,20 +183,3 @@ npm i && npm run dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
