@@ -1,10 +1,8 @@
 "use client";
 
 import { Link } from '@/lib/google-sheets';
-import { useEffect, lazy, Suspense } from 'react';
-
-// Use lazy loading for better code splitting
-const LinkCard = lazy(() => import('./LinkCard'));
+import { useEffect } from 'react';
+import LinkCard from './LinkCard';
 
 interface LinkContainerProps {
   links: Link[];
@@ -26,11 +24,9 @@ export default function LinkContainer({ links }: LinkContainerProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Suspense fallback={<div className="text-center p-2">Loading...</div>}>
-            {links.map((link, index) => (
-              <LinkCard key={index} link={link} />
-            ))}
-          </Suspense>
+          {links.map((link, index) => (
+            <LinkCard key={`${link.url}-${index}`} link={link} />
+          ))}
         </div>
       )}
     </div>

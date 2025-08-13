@@ -1,0 +1,12 @@
+{
+  "name": "Olive Free Library Links",
+  "short_name": "OFL Links",
+  "description": "A collection of useful links for the Olive Free Library community",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3a4b20",
+  "orientation": "portrait-primary",
+  "categories": ["education", "reference", "utilities"],
+  "lang": "en-US"
+}

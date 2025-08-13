@@ -1,0 +1,188 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Development Server",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Build Application",
+			"type": "shell",
+			"command": "npm run build",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Lint Code",
+			"type": "shell",
+			"command": "npm run lint",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Restart Development Server",
+			"type": "shell",
+			"command": "pkill -f 'next-server' && sleep 2 && npm run dev",
+			"isBackground": true,
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Check Broken Links",
+			"type": "shell",
+			"command": "cd puppeteer && npm install && node count-links.js --url http://localhost:3000",
+			"group": "test",
+			"dependsOn": "Start Development Server",
+			"dependsOrder": "sequence",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Check Links (Production)",
+			"type": "shell",
+			"command": "cd puppeteer && npm install && node count-links.js --url https://olivelibrarylinks.vercel.app/",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Install Dependencies",
+			"type": "shell",
+			"command": "npm install",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Clean Build Cache",
+			"type": "shell",
+			"command": "rm -rf .next && rm -rf node_modules/.cache",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Full Clean & Rebuild",
+			"type": "shell",
+			"command": "rm -rf .next && rm -rf node_modules/.cache && npm run build",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Check Running Processes",
+			"type": "shell",
+			"command": "ps aux | grep -E 'next|node' | grep -v grep",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Stop All Next.js Processes",
+			"type": "shell",
+			"command": "pkill -f 'next-server' || echo 'No Next.js processes found'",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Test API Endpoints",
+			"type": "shell",
+			"command": "echo 'Testing /api/links...' && curl -s http://localhost:3000/api/links | jq . && echo '\\nTesting /api/refresh...' && curl -s http://localhost:3000/api/refresh",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "View Build Analysis",
+			"type": "shell",
+			"command": "npm run build && echo '\\n--- Build Analysis ---' && ls -la .next/static/chunks/ | head -20",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Setup Puppeteer Dependencies",
+			"type": "shell",
+			"command": "cd puppeteer && npm install",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		}
+	]
+}

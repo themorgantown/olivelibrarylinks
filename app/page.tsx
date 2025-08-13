@@ -1,7 +1,6 @@
 import { Link, getLinksFromSheet } from '@/lib/google-sheets';
 import LinkContainer from './components/LinkContainer';
 import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
 
 // We can use static rendering for the page itself
 export const dynamic = 'auto';
@@ -18,13 +17,16 @@ async function getLinks(): Promise<Link[]> {
   }
 }
 
-export default async function Home() {
-  // Await headers to ensure it's properly resolved
-  const headersList = await headers();
-  const searchParams = new URLSearchParams(headersList.get('x-forwarded-query') || '');
-  const refreshParam = searchParams.get('refresh');
+interface HomeProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-  if (refreshParam !== null) {
+export default async function Home({ searchParams }: HomeProps) {
+  // Await searchParams to handle the Promise properly
+  const params = await searchParams;
+  const refreshParam = params.refresh;
+
+  if (refreshParam !== undefined) {
     redirect('/api/refresh');
   }
 
