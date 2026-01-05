@@ -11,7 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const hasLoadedRef = useRef(false);
 
   const fetchLinks = useCallback(
@@ -21,9 +21,7 @@ export default function Home() {
         : API_ENDPOINT;
 
       try {
-        if (forceRefresh) {
-          setIsRefreshing(true);
-        } else if (!hasLoadedRef.current) {
+        if (!hasLoadedRef.current && !forceRefresh) {
           setLoading(true);
         }
 
@@ -54,7 +52,6 @@ export default function Home() {
         setError(message);
       } finally {
         setLoading(false);
-        setIsRefreshing(false);
       }
     },
     []
@@ -88,19 +85,6 @@ export default function Home() {
       <header className="w-full max-w-3xl mb-8 text-center">
         <h1 className="text-3xl font-bold text-[#3a4b20] mb-2 playfair-display-header">Olive Free Library Links</h1>
         <div className="h-1 w-24 bg-[#3a4b2066] mx-auto"></div>
-        <div className="mt-4 flex flex-col items-center space-y-2 text-sm text-[#5B5B66]">
-          {lastUpdatedLabel && (
-            <p>Last updated at {lastUpdatedLabel}</p>
-          )}
-          <button
-            type="button"
-            onClick={() => fetchLinks(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-[#3a4b20] px-4 py-2 text-white transition hover:bg-[#2c3718] disabled:opacity-60"
-            disabled={isRefreshing}
-          >
-            {isRefreshing ? 'Refreshing…' : 'Refresh links'}
-          </button>
-        </div>
       </header>
 
       <main className="w-full max-w-6xl flex-1">
