@@ -55,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={playfairDisplay.variable}>
       <head>
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
       </head>
       <body className="antialiased">
         {children}
