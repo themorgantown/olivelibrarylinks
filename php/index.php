@@ -14,6 +14,16 @@ header('Content-Type: application/json');
 header('Cache-Control: no-store, must-revalidate');
 header('Pragma: no-cache');
 
+// Allow requests from any origin (or specify specific origins like http://localhost:3000)
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
 try {
     ensureExtensionsLoaded(['curl', 'openssl']);
 

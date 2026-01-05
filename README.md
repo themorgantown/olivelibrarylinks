@@ -10,7 +10,7 @@ This repository contains a static Next.js front-end and a lightweight PHP API th
 - **Flat-file JSON cache** so the API works without a database
 
 ## Data Flow
-1. The browser loads the exported static site (e.g., `https://thestrange.foundation/olivelibrarylinks/source/`).
+1. The browser loads the exported static site (e.g., `https://thestrange.foundation/olivefreelibrarylinks/source/`).
 2. On mount, the client fetches `../php/index.php` (or the URL defined in `NEXT_PUBLIC_API_ENDPOINT`).
 3. The PHP script refreshes Google Sheets data at most every five minutes, serving cached results otherwise.
 4. The React UI renders link cards, shows loading states, and offers a manual refresh button that appends `?refresh=1` to the API call.
@@ -49,7 +49,7 @@ npm run build
 ```
 
 Deploy by copying the contents of `out/` and the `php/` folder to your web root:
-- Serve `out/` as static files at `https://thestrange.foundation/olivelibrarylinks/source/`.
+- Serve `out/` as static files at `https://thestrange.foundation/olivefreelibrarylinks/source/`.
 - Ensure `php/index.php` is reachable at `https://thestrange.foundation/olivefreelibrarylinks/php/index.php`.
 - Give the web server write access to `php/storage/` so cache files can be created.
 

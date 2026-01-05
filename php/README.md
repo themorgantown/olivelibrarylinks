@@ -2,7 +2,7 @@
 
 This lightweight PHP endpoint mirrors the Google Sheets data adapter used by the Next.js application. Deploy the contents of this folder to any PHP-capable host to expose a cached JSON feed that your frontend can consume instead of calling Google directly.
 
-Endpoint URL:
+Endpoint URL where the contents of /php are deployed:
 
 https://thestrange.foundation/olivefreelibrarylinks/php/
 

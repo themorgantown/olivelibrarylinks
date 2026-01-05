@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Olive Free Library" }],
   creator: "Olive Free Library",
   publisher: "Olive Free Library",
-  metadataBase: new URL('https://thestrange.foundation/olivelibrarylinks/php'),
+  metadataBase: new URL('https://thestrange.foundation/olivefreelibrarylinks/php'),
   openGraph: {
     title: "Olive Free Library Links",
     description: "A collection of useful links for the Olive Free Library community.",
