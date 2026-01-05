@@ -11,8 +11,9 @@ require __DIR__ . '/src/CacheStore.php';
 require __DIR__ . '/src/GoogleSheetsService.php';
 
 header('Content-Type: application/json');
-header('Cache-Control: no-store, must-revalidate');
-header('Pragma: no-cache');
+// Cache for 60 seconds, allow stale content for 5 minutes (300s) while revalidating
+header('Cache-Control: public, max-age=60, stale-while-revalidate=300');
+header('Pragma: cache');
 
 // Allow requests from any origin (or specify specific origins like http://localhost:3000)
 header('Access-Control-Allow-Origin: *');
