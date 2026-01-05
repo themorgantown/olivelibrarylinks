@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import LinkContainer from './components/LinkContainer';
 import type { LinkItem, ApiResponse } from '@/lib/types';
 
@@ -10,7 +10,7 @@ export default function Home() {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<number | null>(null);
+
 
   const hasLoadedRef = useRef(false);
 
@@ -45,7 +45,7 @@ export default function Home() {
 
         setLinks(data.links);
         setError(null);
-        setLastUpdated(Date.now());
+
         hasLoadedRef.current = true;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Unknown error fetching links.';
@@ -69,16 +69,7 @@ export default function Home() {
     };
   }, [fetchLinks]);
 
-  const lastUpdatedLabel = useMemo(() => {
-    if (!lastUpdated) {
-      return null;
-    }
 
-    return new Date(lastUpdated).toLocaleTimeString(undefined, {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  }, [lastUpdated]);
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-16">
