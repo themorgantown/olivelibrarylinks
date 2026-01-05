@@ -13,6 +13,7 @@
     "google-auth-library": "^9.15.1",
     "googleapis": "^148.0.0",
     "next": "^15.4.6",
+    "puppeteer": "^24.34.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
