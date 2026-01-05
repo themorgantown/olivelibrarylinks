@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Playfair_Display } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const playfairDisplay = Playfair_Display({
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Olive Free Library" }],
   creator: "Olive Free Library",
   publisher: "Olive Free Library",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://olivelibrarylinks.vercel.app'),
+  metadataBase: new URL('https://thestrange.foundation/olivelibrarylinks/php'),
   openGraph: {
     title: "Olive Free Library Links",
     description: "A collection of useful links for the Olive Free Library community.",
@@ -60,7 +59,6 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         {children}
-        <Analytics />
       </body>
     </html>
   );

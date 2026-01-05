@@ -1,7 +1,7 @@
-import { Link } from '@/lib/google-sheets';
+import { LinkItem } from '@/lib/types';
 
 interface LinkCardProps {
-  link: Link;
+  link: LinkItem;
 }
 
 export default function LinkCard({ link }: LinkCardProps) {

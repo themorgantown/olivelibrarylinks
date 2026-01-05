@@ -5,9 +5,7 @@ Allow: /
 Crawl-delay: 1
 
 # Block unnecessary paths
-Disallow: /api/
-Disallow: /_next/
-Disallow: /favicon.ico
+Disallow:
 
 # Sitemap
-Sitemap: https://olivelibrarylinks.vercel.app/sitemap.xml
+Sitemap: https://thestrange.foundation/olivefreelibrarylinks/sitemap.xml

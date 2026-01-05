@@ -1,21 +1,13 @@
 "use client";
 
-import { Link } from '@/lib/google-sheets';
-import { useEffect } from 'react';
+import { LinkItem } from '@/lib/types';
 import LinkCard from './LinkCard';
 
 interface LinkContainerProps {
-  links: Link[];
+  links: LinkItem[];
 }
 
 export default function LinkContainer({ links }: LinkContainerProps) {
-  // Log the links data to console in development mode
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('Client-side - Google Sheets data:', links);
-    }
-  }, [links]);
-  
   return (
     <div className="w-full max-w-6xl mx-auto">
       {links.length === 0 ? (

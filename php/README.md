@@ -4,7 +4,7 @@ This lightweight PHP endpoint mirrors the Google Sheets data adapter used by the
 
 Endpoint URL:
 
-https://thestrange.foundation/olivefreelibrarylinks/
+https://thestrange.foundation/olivefreelibrarylinks/php/
 
 ## Requirements
 - PHP 8.1+ with the `curl` and `openssl` extensions enabled
