@@ -19,7 +19,7 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  output: 'export',
+
   basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? undefined,
   assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH ?? undefined,
   poweredByHeader: false,

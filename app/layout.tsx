@@ -52,10 +52,36 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Library',
+    name: 'Olive Free Library',
+    url: 'https://olivelibrarylinks.vercel.app/',
+    logo: 'https://www.olivefreelibrary.org/favicon.ico', // Assuming an icon exists or will default to something generic if not, but good for SEO
+    sameAs: [
+      'https://www.olivefreelibrary.org',
+      'https://www.instagram.com/olivefreelibrary/',
+      'https://www.facebook.com/olivelibrary'
+    ],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '4033 Route 28A',
+      addressLocality: 'West Shokan',
+      addressRegion: 'NY',
+      postalCode: '12494',
+      addressCountry: 'US'
+    },
+    telephone: '+1-845-657-2482' 
+  };
+
   return (
     <html lang="en" className={playfairDisplay.variable}>
       <head>
         <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className="antialiased">
         {children}

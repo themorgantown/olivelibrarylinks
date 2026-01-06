@@ -1,9 +1,8 @@
 import { MetadataRoute } from 'next'
 
-export const dynamic = 'force-static'
-export const revalidate = false
+export const dynamic = 'force-dynamic'
 
-const BASE_URL = 'https://thestrange.foundation/olivefreelibrarylinks/';
+const BASE_URL = 'https://olivelibrarylinks.vercel.app/';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
