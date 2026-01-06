@@ -38,8 +38,6 @@ npm install
 npm run dev
 ```
 
-The development server defaults to `http://localhost:3000/olivelibrarylinks/source/`. To test against a local PHP endpoint, set `NEXT_PUBLIC_API_ENDPOINT=http://localhost/path/to/php/index.php` before starting the server.
-
 ## Static Build & Deployment
 ```bash
 # Generate the static output
