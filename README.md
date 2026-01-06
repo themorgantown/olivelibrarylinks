@@ -1,5 +1,8 @@
 # Olive Library Links
 
+URL: https://olivelibrarylinks.vercel.app/ 
+and: https://olivelibrarylinks.vercel.app/?refresh=1
+
 This repository contains a static Next.js front-end and a lightweight PHP API that together surface curated resources for the Olive Free Library. The PHP endpoint reads from Google Sheets, caches results for five minutes, and serves JSON that the static site consumes at runtime.
 
 ## Tech Stack
@@ -10,8 +13,8 @@ This repository contains a static Next.js front-end and a lightweight PHP API th
 - **Flat-file JSON cache** so the API works without a database
 
 ## Data Flow
-1. The browser loads the exported static site (e.g., `https://thestrange.foundation/olivefreelibrarylinks/source/`).
-2. On mount, the client fetches `../php/index.php` (or the URL defined in `NEXT_PUBLIC_API_ENDPOINT`).
+1. The browser loads the exported static site: https://olivelibrarylinks.vercel.app/ 
+2. On mount, the client fetches from a PHP endpoint` (or the URL defined in `NEXT_PUBLIC_API_ENDPOINT`).
 3. The PHP script refreshes Google Sheets data at most every five minutes, serving cached results otherwise.
 4. The React UI renders link cards, shows loading states, and offers a manual refresh button that appends `?refresh=1` to the API call.
 
@@ -19,8 +22,8 @@ This repository contains a static Next.js front-end and a lightweight PHP API th
 - `app/` – Next.js App Router pages, layout, and components
 - `lib/types.ts` – Shared TypeScript types for API responses
 - `public/` – Static assets (favicon, manifest, robots)
-- `php/` – Standalone PHP API, cache storage, and documentation
-- `next.config.ts` – Configured with `output: 'export'` and `basePath: '/olivelibrarylinks/source'` for static hosting
+- `php/` – Standalone PHP API, cache storage, and documentation. 
+
 
 ## Configuration
 - `NEXT_PUBLIC_API_ENDPOINT` (optional): Override the default API URL (`https://thestrange.foundation/olivefreelibrarylinks/php/index.php`).
@@ -56,10 +59,19 @@ Deploy by copying the contents of `out/` and the `php/` folder to your web root:
 - Adding `?refresh=1` forces an immediate refresh attempt; stale data is still returned on failure.
 - Review `php/README.md` for detailed setup steps and response examples.
 
-## Customisation Checklist
-- Update copy and branding in `app/page.tsx`, `app/layout.tsx`, and `public/manifest.json`.
-- Replace footer links and social media URLs as needed.
-- Adjust styles or colors directly in the component class names.
-- Edit metadata (Open Graph, Twitter) inside `app/layout.tsx`.
+## Customisation Checklist for your own site: 
+- **Update Base URL**: Replace `https://olivelibrarylinks.vercel.app/` with your own domain in:
+  - `app/sitemap.ts`
+  - `app/robots.ts`
+- **Configure API Endpoint**:
+  - The default API endpoint is defined in `app/page.tsx`.
+  - To use your own PHP backend, set the environment variable `NEXT_PUBLIC_API_ENDPOINT` in your deployment (e.g., Vercel) or update the default value in `app/page.tsx`.
+- **Update Branding & Copy**:
+  - `app/page.tsx`: Update the header title ("Olive Free Library Links") and the footer links.
+  - `app/layout.tsx`: Update the metadata (title, description, Open Graph images).
+  - `public/manifest.json`: Update the app name and icons.
+- **Styling**:
+  - Adjust colors and styles in `app/globals.css` or directly in component classes (Tailwind).
+
 
 Once configured, the site can run entirely from any static hosting service while the PHP API handles live data updates and caching.
