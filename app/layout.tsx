@@ -6,7 +6,7 @@ const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair-display',
   display: 'swap', // Use display swap for better performance
-  preload: true,
+  preload: false, // Disable preload to fix unused resource warning
 });
 
 // Enhanced metadata for SEO and social sharing
