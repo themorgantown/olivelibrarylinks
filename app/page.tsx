@@ -6,13 +6,31 @@ import type { LinkItem, ApiResponse } from '@/lib/types';
 
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'https://thestrange.foundation/olivefreelibrarylinks/php/index.php';
 
+const LINKS_STORAGE_KEY = 'olivelibrarylinks:links:v1';
+const LINKS_STORAGE_TIMESTAMP_KEY = 'olivelibrarylinks:links_updated_at:v1';
+
+function areLinksEqual(a: LinkItem[], b: LinkItem[]) {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+
+  for (let i = 0; i < a.length; i += 1) {
+    const left = a[i];
+    const right = b[i];
+    if (left.title !== right.title) return false;
+    if (left.url !== right.url) return false;
+    if ((left.description ?? '') !== (right.description ?? '')) return false;
+  }
+
+  return true;
+}
+
 export default function Home() {
   const [links, setLinks] = useState<LinkItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-
   const hasLoadedRef = useRef(false);
+  const linksRef = useRef<LinkItem[]>([]);
 
   const fetchLinks = useCallback(
     async (forceRefresh = false) => {
@@ -21,9 +39,7 @@ export default function Home() {
         : API_ENDPOINT;
 
       try {
-        if (!hasLoadedRef.current && !forceRefresh) {
-          setLoading(true);
-        }
+        setIsUpdating(true);
 
         const response = await fetch(endpoint, {
           method: 'GET',
@@ -43,22 +59,69 @@ export default function Home() {
           throw new Error('The API returned an unexpected response.');
         }
 
-        setLinks(data.links);
+        const nextLinks = data.links;
+
+        setLinks((current) => {
+          if (areLinksEqual(current, nextLinks)) {
+            return current;
+          }
+          linksRef.current = nextLinks;
+          return nextLinks;
+        });
+
+        try {
+          localStorage.setItem(LINKS_STORAGE_KEY, JSON.stringify(nextLinks));
+          localStorage.setItem(LINKS_STORAGE_TIMESTAMP_KEY, String(Date.now()));
+        } catch {
+          // Ignore storage failures (private mode, quota, etc.)
+        }
+
         setError(null);
 
         hasLoadedRef.current = true;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Unknown error fetching links.';
-        setError(message);
+        if (linksRef.current.length === 0) {
+          setError(message);
+        } else {
+          setError(null);
+        }
       } finally {
-        setLoading(false);
+        setIsUpdating(false);
       }
     },
     []
   );
 
   useEffect(() => {
-    void fetchLinks(false);
+    try {
+      const cached = localStorage.getItem(LINKS_STORAGE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as unknown;
+        if (Array.isArray(parsed)) {
+          const cachedLinks = parsed as LinkItem[];
+          setLinks(cachedLinks);
+          linksRef.current = cachedLinks;
+          hasLoadedRef.current = true;
+        }
+      }
+    } catch {
+      // Ignore cache parsing / storage errors
+    }
+
+    const shouldForceRefresh = new URLSearchParams(window.location.search).get('refresh') === '1';
+
+    void fetchLinks(shouldForceRefresh);
+
+    if (shouldForceRefresh) {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('refresh');
+        window.history.replaceState({}, '', url.toString());
+      } catch {
+        // Ignore URL manipulation failures
+      }
+    }
 
     const interval = window.setInterval(() => {
       void fetchLinks(false);
@@ -76,16 +139,13 @@ export default function Home() {
       <header className="w-full max-w-3xl mb-8 text-center">
         <h1 className="text-3xl font-bold text-[#3a4b20] mb-2 playfair-display-header">Olive Free Library Links</h1>
         <div className="h-1 w-24 bg-[#3a4b2066] mx-auto"></div>
+        {isUpdating && links.length > 0 && (
+          <p className="mt-3 text-xs text-[#5B5B66]">Updating links…</p>
+        )}
       </header>
 
       <main className="w-full max-w-6xl flex-1">
-        {loading && (
-          <div className="text-center p-6 bg-[#d9d9d9] shadow rounded-md text-[#5B5B66]">
-            Loading links…
-          </div>
-        )}
-
-        {error && (
+        {error && links.length === 0 && (
           <div className="text-center p-6 mb-4 bg-red-100 border border-red-300 text-red-700 rounded-md">
             <p className="font-semibold">Unable to load links.</p>
             <p className="mt-2 text-sm">{error}</p>
@@ -99,8 +159,17 @@ export default function Home() {
           </div>
         )}
 
-        {!loading && !error && (
+        {links.length > 0 ? (
           <LinkContainer links={links} />
+        ) : (
+          !error && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="h-28 rounded-md bg-[#d9d9d9] shadow" />
+              <div className="h-28 rounded-md bg-[#d9d9d9] shadow" />
+              <div className="h-28 rounded-md bg-[#d9d9d9] shadow" />
+              <div className="h-28 rounded-md bg-[#d9d9d9] shadow" />
+            </div>
+          )
         )}
       </main>
 

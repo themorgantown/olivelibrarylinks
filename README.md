@@ -14,9 +14,13 @@ This repository contains a static Next.js front-end and a lightweight PHP API th
 
 ## Data Flow
 1. The browser loads the exported static site: https://olivelibrarylinks.vercel.app/ 
-2. On mount, the client fetches from a PHP endpoint` (or the URL defined in `NEXT_PUBLIC_API_ENDPOINT`).
+2. On mount, the client renders the most recently cached links immediately (stored in `localStorage`), then fetches updated links from the PHP endpoint (or the URL defined in `NEXT_PUBLIC_API_ENDPOINT`) in the background. Visiting the site with `?refresh=1` forces that background fetch to request a refresh from the PHP endpoint.
 3. The PHP script refreshes Google Sheets data at most every five minutes, serving cached results otherwise.
-4. The React UI renders link cards, shows loading states, and offers a manual refresh button that appends `?refresh=1` to the API call.
+4. If the background fetch returns different links, the React UI updates. If the fetch fails but cached links exist, the UI continues showing the cached links without interrupting the experience.
+
+## Client-side caching
+- The front-end stores the last successful link payload in `localStorage` so returning visitors see links immediately, even if they haven’t visited in a while.
+- To force a truly “cold” first-load experience during testing, clear site data for the domain (or remove the `localStorage` keys `olivelibrarylinks:links:v1` and `olivelibrarylinks:links_updated_at:v1`).
 
 ## Directory Overview
 - `app/` – Next.js App Router pages, layout, and components

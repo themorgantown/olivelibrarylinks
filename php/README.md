@@ -2,16 +2,6 @@
 
 This lightweight PHP endpoint mirrors the Google Sheets data adapter used by the Next.js application. Deploy the contents of this folder to any PHP-capable host to expose a cached JSON feed that your frontend can consume instead of calling Google directly.
 
-# important: 
-
-In vercel, you must set: 
-
-`NEXT_PUBLIC_BASE_PATH='/olivelibrarylinks',`
-
-Endpoint URL where the contents of /php are deployed:
-
-https://thestrange.foundation/olivefreelibrarylinks/php/
-
 ## Requirements
 - PHP 8.1+ with the `curl` and `openssl` extensions enabled
 - Service account credentials with read access to your Google Sheet
