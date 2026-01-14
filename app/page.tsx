@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import LinkContainer from './components/LinkContainer';
 import type { LinkItem, ApiResponse } from '@/lib/types';
 
-const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'https://thestrange.foundation/olivefreelibrarylinks/php/index.php';
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'https://thestrange.foundation/olivefreelibrarylinks/phppreviews/index.php';
 
 const LINKS_STORAGE_KEY = 'olivelibrarylinks:links:v1';
 const LINKS_STORAGE_TIMESTAMP_KEY = 'olivelibrarylinks:links_updated_at:v1';
@@ -19,6 +19,7 @@ function areLinksEqual(a: LinkItem[], b: LinkItem[]) {
     if (left.title !== right.title) return false;
     if (left.url !== right.url) return false;
     if ((left.description ?? '') !== (right.description ?? '')) return false;
+    if ((left.image ?? '') !== (right.image ?? '')) return false;
   }
 
   return true;
@@ -60,6 +61,27 @@ export default function Home() {
         }
 
         const nextLinks = data.links;
+
+        try {
+          const withImages = nextLinks.filter((link) => Boolean(link.image)).length;
+          const withoutImages = nextLinks.length - withImages;
+          // Log which links have images to help diagnose missing previews during local dev.
+          // Avoid logging large payloads by only showing url/title/image presence.
+          console.groupCollapsed(
+            `Links fetched (${nextLinks.length}) — with images: ${withImages}, without images: ${withoutImages}`
+          );
+          nextLinks.forEach((link, idx) => {
+            console.info(`#${idx + 1}`, {
+              title: link.title,
+              url: link.url,
+              hasImage: Boolean(link.image),
+              image: link.image ?? null,
+            });
+          });
+          console.groupEnd();
+        } catch {
+          // Ignore logging failures (e.g., unsupported console methods)
+        }
 
         setLinks((current) => {
           if (areLinksEqual(current, nextLinks)) {

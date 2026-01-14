@@ -2,6 +2,7 @@ export interface LinkItem {
   title: string;
   url: string;
   description?: string;
+  image?: string;
 }
 
 export interface ApiResponse {

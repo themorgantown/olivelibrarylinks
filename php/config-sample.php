@@ -7,7 +7,9 @@ $manualConfig = [
     'google_client_email' => 'xxx',
     'google_private_key' => 'xxx',
     'cache_file' => __DIR__ . '/storage/links-cache.json',
-    'cache_ttl' => 300,
+    'links_cache_ttl' => 300,
+    'image_cache_ttl' => 86400,
+    'imagespreview' => true,
 ];
 
 return [
@@ -19,5 +21,6 @@ return [
 
     // Cache configuration
     'cache_file' => getenv('CACHE_FILE') ?: $manualConfig['cache_file'],
-    'cache_ttl' => getenv('CACHE_TTL') ? (int) getenv('CACHE_TTL') : (int) $manualConfig['cache_ttl'],
+    'links_cache_ttl' => getenv('LINKS_CACHE_TTL') ? (int) getenv('LINKS_CACHE_TTL') : (int) ($manualConfig['links_cache_ttl'] ?? 300),
+    'image_cache_ttl' => getenv('IMAGE_CACHE_TTL') ? (int) getenv('IMAGE_CACHE_TTL') : (int) ($manualConfig['image_cache_ttl'] ?? 86400),
 ];

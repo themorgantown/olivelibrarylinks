@@ -19,8 +19,9 @@ Fill in the required settings in `config.php` (or provide them via environment v
 | `google_private_key` | Service account private key (use `\n` for newlines when setting env vars) |
 | `cache_file` | Path to the JSON cache (defaults to `storage/links-cache.json`) |
 | `cache_ttl` | Cache lifetime in seconds (default `300`, i.e. 5 minutes) |
+| `imagespreview` | Enable/disable image previews and caching (default `true`) |
 
-You can either edit `config.php` directly or set the corresponding environment variables (`GOOGLE_SHEET_ID`, `GOOGLE_SHEET_RANGE`, `GOOGLE_CLIENT_EMAIL`, `GOOGLE_PRIVATE_KEY`). When environment variables are present they take priority.
+You can either edit `config.php` directly or set the corresponding environment variables (`GOOGLE_SHEET_ID`, `GOOGLE_SHEET_RANGE`, `GOOGLE_CLIENT_EMAIL`, `GOOGLE_PRIVATE_KEY`, `IMAGESPREVIEW`). When environment variables are present they take priority.
 
 ## Usage
 - `GET /index.php` – Returns cached link data. Fresh data is fetched from Google Sheets when the cache is missing or older than five minutes.

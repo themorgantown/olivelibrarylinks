@@ -38,6 +38,7 @@ This repository contains a static Next.js front-end and a lightweight PHP API th
   - `GOOGLE_PRIVATE_KEY`
   - `CACHE_FILE` (optional override)
   - `CACHE_TTL` (optional, defaults to 300 seconds)
+  - `IMAGESPREVIEW` (optional, set to `false` to disable image preview extraction and caching)
 
 ## Local Development
 ```bash
