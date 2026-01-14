@@ -10,6 +10,7 @@ $manualConfig = [
     'links_cache_ttl' => 300,
     'image_cache_ttl' => 86400,
     'imagespreview' => true,
+    'image_max_dimension' => 650,
 ];
 
 return [
