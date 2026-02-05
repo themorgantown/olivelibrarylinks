@@ -8,7 +8,7 @@ This repository contains a static Next.js front-end and a lightweight PHP API th
 ## Tech Stack
 - **Next.js 15 + React 19** for the static UI
 - **TypeScript** across all front-end code
-- **Tailwind-style utility classes** via global CSS
+- **Tailwind-style utility classes** via global CSS. Inlined for speed. 
 - **PHP 8.1+** endpoint (with `curl` and `openssl`) for Google Sheets access
 - **Flat-file JSON cache** so the API works without a database
 
