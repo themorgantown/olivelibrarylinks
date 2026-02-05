@@ -78,6 +78,8 @@ export default function RootLayout({
     <html lang="en" className={playfairDisplay.variable}>
       <head>
         <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
+        <link rel="preconnect" href="https://thestrange.foundation" />
+        <link rel="dns-prefetch" href="https://thestrange.foundation" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
