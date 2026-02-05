@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -74,12 +76,22 @@ export default function RootLayout({
     telephone: '+1-845-657-2482' 
   };
 
+  // Read CSS file content to inline it
+  let cssContent = '';
+  try {
+    cssContent = readFileSync(join(process.cwd(), 'app/globals.css'), 'utf-8');
+  } catch {
+    // Fallback for edge cases
+    console.warn('Could not inline CSS');
+  }
+
   return (
     <html lang="en" className={playfairDisplay.variable}>
       <head>
         <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
         <link rel="preconnect" href="https://thestrange.foundation" />
         <link rel="dns-prefetch" href="https://thestrange.foundation" />
+        {cssContent && <style suppressHydrationWarning dangerouslySetInnerHTML={{ __html: cssContent }} />}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
