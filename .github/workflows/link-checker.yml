@@ -36,6 +36,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: puppeteer/package-lock.json
 
       - name: Install deps
         working-directory: ./puppeteer
@@ -53,7 +54,7 @@ jobs:
           echo "::notice title=Link‑count::${LINK_COUNT:-0}"
 
       - name: Upload screenshot for issue
-        if: steps.link_check.outputs.LINK_COUNT == '0' || steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
+        if: fromJSON(steps.link_check.outputs.LINK_COUNT) < 4 || steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
         uses: actions/upload-artifact@v4
         with:
           name: failed‑link‑checker‑screenshot
@@ -61,7 +62,7 @@ jobs:
           retention-days: 1
 
       - name: Create alert issue
-        if: steps.link_check.outputs.LINK_COUNT == '0' || steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
+        if: fromJSON(steps.link_check.outputs.LINK_COUNT) < 4 || steps.link_check.outputs.SCRIPT_EXIT_CODE != '0'
         uses: actions-ecosystem/action-create-issue@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
